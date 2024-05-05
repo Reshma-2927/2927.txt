@@ -1,0 +1,381 @@
+1) Implement a Link Shortener system in Java.
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class LinkShortener {
+    private Map<String, String> shortToLongUrlMap;
+    private Map<String, String> longToShortUrlMap;
+    private final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private final int SHORT_URL_LENGTH = 6;
+
+    public LinkShortener() {
+        shortToLongUrlMap = new HashMap<>();
+        longToShortUrlMap = new HashMap<>();
+    }
+
+    public String shortenUrl(String longUrl) {
+        if (longToShortUrlMap.containsKey(longUrl)) {
+            return longToShortUrlMap.get(longUrl);
+        }
+
+        StringBuilder shortUrl = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < SHORT_URL_LENGTH; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            shortUrl.append(CHARACTERS.charAt(randomIndex));
+        }
+
+        String shortUrlString = shortUrl.toString();
+        shortToLongUrlMap.put(shortUrlString, longUrl);
+        longToShortUrlMap.put(longUrl, shortUrlString);
+        return shortUrlString;
+    }
+
+    public String getLongUrl(String shortUrl) {
+        return shortToLongUrlMap.get(shortUrl);
+    }
+
+    public static void main(String[] args) {
+        LinkShortener linkShortener = new LinkShortener();
+        String longUrl = "https://example.com/very/long/url/to/be/shortened";
+        String shortUrl = linkShortener.shortenUrl(longUrl);
+        System.out.println("Shortened URL: " + shortUrl);
+        System.out.println("Original URL: " + linkShortener.getLongUrl(shortUrl));
+    }
+}
+
+output: 
+
+java -cp /tmp/Cdd4A4KY3o/LinkShortener
+Shortened URL: 29cvQV
+Original URL: https://example.com/very/long/url/to/be/shortened
+
+=== Code Execution Successful ===
+
+
+2) Develop functions to shorten long URLs and expand short URLs to their original form.
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class LinkShortener {
+    private Map<String, String> shortToLongUrlMap;
+    private Map<String, String> longToShortUrlMap;
+    private final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private final int SHORT_URL_LENGTH = 6;
+
+    public LinkShortener() {
+        shortToLongUrlMap = new HashMap<>();
+        longToShortUrlMap = new HashMap<>();
+    }
+
+    public String shortenUrl(String longUrl) {
+        if (longToShortUrlMap.containsKey(longUrl)) {
+            return longToShortUrlMap.get(longUrl);
+        }
+
+        StringBuilder shortUrl = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < SHORT_URL_LENGTH; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            shortUrl.append(CHARACTERS.charAt(randomIndex));
+        }
+
+        String shortUrlString = shortUrl.toString();
+        shortToLongUrlMap.put(shortUrlString, longUrl);
+        longToShortUrlMap.put(longUrl, shortUrlString);
+        return shortUrlString;
+    }
+
+    public String expandUrl(String shortUrl) {
+        return shortToLongUrlMap.getOrDefault(shortUrl, "Short URL not found.");
+    }
+
+    public static void main(String[] args) {
+        LinkShortener linkShortener = new LinkShortener();
+        String longUrl = "https://example.com/very/long/url/to/be/shortened";
+        String shortUrl = linkShortener.shortenUrl(longUrl);
+        System.out.println("Shortened URL: " + shortUrl);
+        System.out.println("Original URL: " + linkShortener.expandUrl(shortUrl));
+    }
+}
+
+
+output:  
+
+   java -cp /tmp/lFesipUJkj/LinkShortener
+Shortened URL: LTTSMA
+Original URL: https://example.com/very/long/url/to/be/shortened
+
+=== Code Execution Successful ===
+
+3) Ensure the uniqueness of short URLs and handle potential collisions.
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class LinkShortener {
+    private Map<String, String> shortToLongUrlMap;
+    private Map<String, String> longToShortUrlMap;
+    private final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private final int SHORT_URL_LENGTH = 6;
+
+    public LinkShortener() {
+        shortToLongUrlMap = new HashMap<>();
+        longToShortUrlMap = new HashMap<>();
+    }
+
+    public String shortenUrl(String longUrl) {
+        if (longToShortUrlMap.containsKey(longUrl)) {
+            return longToShortUrlMap.get(longUrl);
+        }
+
+        String shortUrl;
+        do {
+            shortUrl = generateShortUrl();
+        } while (shortToLongUrlMap.containsKey(shortUrl));
+
+        shortToLongUrlMap.put(shortUrl, longUrl);
+        longToShortUrlMap.put(longUrl, shortUrl);
+        return shortUrl;
+    }
+
+    private String generateShortUrl() {
+        StringBuilder shortUrl = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < SHORT_URL_LENGTH; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            shortUrl.append(CHARACTERS.charAt(randomIndex));
+        }
+        return shortUrl.toString();
+    }
+
+    public String expandUrl(String shortUrl) {
+        return shortToLongUrlMap.getOrDefault(shortUrl, "Short URL not found.");
+    }
+
+    public static void main(String[] args) {
+        LinkShortener linkShortener = new LinkShortener();
+        String longUrl = "https://example.com/very/long/url/to/be/shortened";
+        String shortUrl1 = linkShortener.shortenUrl(longUrl);
+        String shortUrl2 = linkShortener.shortenUrl(longUrl); // Testing collision handling
+        System.out.println("Shortened URL 1: " + shortUrl1);
+        System.out.println("Original URL 1: " + linkShortener.expandUrl(shortUrl1));
+        System.out.println("Shortened URL 2: " + shortUrl2);
+        System.out.println("Original URL 2: " + linkShortener.expandUrl(shortUrl2));
+    }
+}
+
+output:
+
+java -cp /tmp/x5zFXAR7FZ/LinkShortener
+Shortened URL 1: ayFpQK
+Original URL 1: https://example.com/very/long/url/to/be/shortened
+Shortened URL 2: ayFpQK
+Original URL 2: https://example.com/very/long/url/to/be/shortened
+
+=== Code Execution Successful ===
+
+4) Explore basic error handling and user feedback.
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class LinkShortener {
+    private Map<String, String> shortToLongUrlMap;
+    private Map<String, String> longToShortUrlMap;
+    private final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private final int SHORT_URL_LENGTH = 6;
+
+    public LinkShortener() {
+        shortToLongUrlMap = new HashMap<>();
+        longToShortUrlMap = new HashMap<>();
+    }
+
+    public String shortenUrl(String longUrl) throws IllegalArgumentException {
+        if (longUrl == null || longUrl.isEmpty()) {
+            throw new IllegalArgumentException("Long URL cannot be null or empty.");
+        }
+
+        if (longToShortUrlMap.containsKey(longUrl)) {
+            return longToShortUrlMap.get(longUrl);
+        }
+
+        String shortUrl;
+        do {
+            shortUrl = generateShortUrl();
+        } while (shortToLongUrlMap.containsKey(shortUrl));
+
+        shortToLongUrlMap.put(shortUrl, longUrl);
+        longToShortUrlMap.put(longUrl, shortUrl);
+        return shortUrl;
+    }
+
+    private String generateShortUrl() {
+        StringBuilder shortUrl = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < SHORT_URL_LENGTH; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            shortUrl.append(CHARACTERS.charAt(randomIndex));
+        }
+        return shortUrl.toString();
+    }
+
+    public String expandUrl(String shortUrl) throws IllegalArgumentException {
+        if (shortUrl == null || shortUrl.isEmpty()) {
+            throw new IllegalArgumentException("Short URL cannot be null or empty.");
+        }
+
+        String longUrl = shortToLongUrlMap.get(shortUrl);
+        if (longUrl == null) {
+            return "Short URL not found.";
+        }
+        return longUrl;
+    }
+
+    public static void main(String[] args) {
+        LinkShortener linkShortener = new LinkShortener();
+        try {
+            String longUrl = "https://example.com/very/long/url/to/be/shortened";
+            String shortUrl1 = linkShortener.shortenUrl(longUrl);
+            String shortUrl2 = linkShortener.shortenUrl(longUrl); // Testing collision handling
+            System.out.println("Shortened URL 1: " + shortUrl1);
+            System.out.println("Original URL 1: " + linkShortener.expandUrl(shortUrl1));
+            System.out.println("Shortened URL 2: " + shortUrl2);
+            System.out.println("Original URL 2: " + linkShortener.expandUrl(shortUrl2));
+            
+            // Testing null input for shortening
+            String nullUrl = null;
+            String shortNullUrl = linkShortener.shortenUrl(nullUrl); // This should throw IllegalArgumentException
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
+
+output: 
+
+java -cp /tmp/EEcb5U92og/LinkShortener
+Shortened URL 1: 53sr8O
+Original URL 1: https://example.com/very/long/url/to/be/shortened
+Shortened URL 2: 53sr8O
+Original URL 2: https://example.com/very/long/url/to/be/shortened
+ERROR!
+Error: Long URL cannot be null or empty.
+
+=== Code Execution Successful ===
+
+5) Gain practical experience in Java programming, data structures, and algorithmic thinking.
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Task {
+    private String name;
+    private String description;
+
+    public Task(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    // Getters and setters
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
+
+class ToDoList {
+    private ArrayList<Task> tasks;
+
+    public ToDoList() {
+        tasks = new ArrayList<>();
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(int index) {
+        tasks.remove(index);
+    }
+
+    public void displayTasks() {
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks in the to-do list.");
+            return;
+        }
+        System.out.println("To-Do List:");
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            System.out.println((i + 1) + ". " + task.getName() + " - " + task.getDescription());
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ToDoList toDoList = new ToDoList();
+
+        while (true) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. Add Task");
+            System.out.println("2. Remove Task");
+            System.out.println("3. View Tasks");
+            System.out.println("4. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter task name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter task description: ");
+                    String description = scanner.nextLine();
+                    Task task = new Task(name, description);
+                    toDoList.addTask(task);
+                    System.out.println("Task added.");
+                    break;
+                case 2:
+                    System.out.print("Enter task number to remove: ");
+                    int index = scanner.nextInt();
+                    toDoList.removeTask(index - 1);
+                    System.out.println("Task removed.");
+                    break;
+                case 3:
+                    toDoList.displayTasks();
+                    break;
+                case 4:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
+
+output: 
+
+java -cp /tmp/jI13WQ34b4/Main
+
+Choose an option:
+1. Add Task
+2. Remove Task
+3. View Tasks
+4. Exit
+4
+Exiting...
+
+=== Code Execution Successful ===
